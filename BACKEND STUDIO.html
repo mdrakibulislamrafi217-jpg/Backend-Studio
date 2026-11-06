@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BACKEND STUDIO</title>
+<style>
+:root{--bg:#0a0f22;--panel:rgba(255,255,255,.055);--line:rgba(255,255,255,.12);--tx:#e7ebff;--mu:#97a2c7;--ok:#34d399;--wn:#fbbf24;--er:#f87171;--g:linear-gradient(135deg,#8b5cf6,#38bdf8);--sw:236px}
+[data-theme=light]{--bg:#eef2fb;--panel:rgba(255,255,255,.8);--line:rgba(20,30,70,.12);--tx:#121833;--mu:#56607f}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;background-image:radial-gradient(900px 500px at -10% -10%,rgba(139,92,246,.25),transparent 60%),radial-gradient(800px 500px at 110% 0%,rgba(56,189,248,.18),transparent 60%);background-attachment:fixed}
+button,input,select,textarea{font:inherit;color:var(--tx)}
+input,select,textarea{width:100%;background:rgba(127,127,180,.12);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:#8b5cf6}
+textarea{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;resize:vertical}
+label{font-size:13px;color:var(--mu)}
+.app{display:flex;min-height:100vh}
+aside{width:var(--sw);flex-shrink:0;padding:16px 12px;border-right:1px solid var(--line);background:var(--panel);backdrop-filter:blur(14px);position:sticky;top:0;height:100vh;overflow:hidden;transition:width .25s}
+aside.collapsed{width:72px}
+aside.collapsed .lbl,aside.collapsed .logo span{display:none}
+.logo{font-weight:800;letter-spacing:.08em;padding:6px 10px 18px;white-space:nowrap}
+.logo span{background:var(--g);-webkit-background-clip:text;background-clip:text;color:transparent}
+.nav a{display:flex;gap:10px;align-items:center;padding:11px 12px;border-radius:12px;text-decoration:none;color:var(--mu);margin-bottom:4px;white-space:nowrap;min-height:44px}
+.nav a:hover,.nav a.active{background:var(--g);color:#fff}
+.ic{width:20px;text-align:center;flex-shrink:0}
+main{flex:1;min-width:0;display:flex;flex-direction:column}
+.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 12px) 22px 12px;background:var(--panel);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.top .title{font-weight:700;flex:1}
+.content{padding:22px;max-width:1200px;width:100%;margin:0 auto;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+h1{font-size:24px;margin-bottom:4px}
+h2{font-size:16px;margin-bottom:10px}
+.muted{color:var(--mu);font-size:14px}
+.head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.glass{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;backdrop-filter:blur(12px);box-shadow:0 8px 30px rgba(0,0,0,.18);margin-bottom:16px;min-width:0}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.grid.two{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.stat strong{display:block;font-size:30px;margin-top:6px;background:var(--g);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stack{display:flex;flex-direction:column;gap:12px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row>*{flex:1 1 180px}
+.row>button{flex:0 0 auto}
+.btn{background:var(--g);color:#fff;border:0;border-radius:12px;padding:11px 18px;min-height:44px;cursor:pointer;font-weight:600;transition:transform .15s,opacity .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--tx)}
+.btn.danger{background:var(--er)}
+.sm{padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:transparent;cursor:pointer;min-height:32px}
+.sm.danger{border-color:var(--er);color:var(--er)}
+.chip{background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.4);border-radius:999px;padding:8px 14px;cursor:pointer;min-height:40px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.badge{display:inline-block;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;border:1px solid var(--line)}
+.badge.ok{color:var(--ok);border-color:var(--ok)}
+.badge.warn{color:var(--wn);border-color:var(--wn)}
+.twrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line);white-space:nowrap}
+td.acts{white-space:nowrap}
+.code,pre{background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:12px;padding:12px;overflow:auto;font-size:13px;white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,Menlo,Consolas,monospace;min-height:60px}
+.hrow{padding:8px 0;border-bottom:1px solid var(--line);font-size:14px;word-break:break-all}
+.msg{padding:12px 14px;border-radius:14px;margin:8px 0;max-width:85%;white-space:pre-wrap;line-height:1.5}
+.msg.u{margin-left:auto;background:var(--g);color:#fff}
+.msg.a{background:rgba(127,127,180,.14);border:1px solid var(--line)}
+.chat{min-height:280px;max-height:52vh;overflow:auto;display:flex;flex-direction:column}
+.st{width:30px;height:30px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);font-size:13px;margin-right:4px}
+.st.cur{background:var(--g);color:#fff;border:0}
+.st.done{border-color:var(--ok);color:var(--ok)}
+.steps{margin-bottom:14px;overflow-x:auto;white-space:nowrap}
+.check{display:flex;gap:10px;align-items:center;font-size:14px}
+.check input{width:20px;height:20px;min-height:0}
+.acts-grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
+.acts-grid button{padding:14px;border-radius:14px;border:1px solid var(--line);background:rgba(127,127,180,.1);cursor:pointer;text-align:left;min-height:52px}
+.acts-grid button:hover{border-color:#8b5cf6}
+#modal{position:fixed;inset:0;background:rgba(3,6,20,.6);display:flex;align-items:center;justify-content:center;padding:20px;z-index:100;backdrop-filter:blur(4px)}
+.dlg{background:var(--bg);border:1px solid var(--line);border-radius:18px;padding:22px;max-width:420px;width:100%;animation:fade .25s ease}
+.dlg p{color:var(--mu);margin:10px 0 18px;line-height:1.5}
+#toasts{position:fixed;top:calc(env(safe-area-inset-top,0px) + 14px);right:14px;z-index:200;display:flex;flex-direction:column;gap:8px;max-width:90vw}
+.toast{background:var(--bg);border:1px solid var(--line);border-left:4px solid #8b5cf6;padding:12px 16px;border-radius:12px;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.3);animation:fade .3s}
+.toast.err{border-left-color:var(--er)}
+.bottom{display:none}
+@media (max-width:760px){
+  aside{display:none;position:fixed;inset:0 auto 0 0;z-index:60;width:250px;height:100vh}
+  aside.open{display:flex;flex-direction:column;box-shadow:10px 0 30px rgba(0,0,0,.4)}
+  .content{padding:16px 14px calc(96px + env(safe-area-inset-bottom,0px))}
+  .top{padding-left:14px;padding-right:14px}
+  .bottom{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:30;background:var(--panel);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:8px 6px calc(8px + env(safe-area-inset-bottom,0px));justify-content:space-around}
+  .bottom a,.bottom button{flex:1;text-align:center;text-decoration:none;color:var(--mu);font-size:12px;background:none;border:0;padding:8px 2px;min-height:48px;cursor:pointer}
+  .bottom a.active{color:#a78bfa;font-weight:700}
+  .msg{max-width:95%}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside id="side">
+    <div class="logo"><span>BACKEND STUDIO</span></div>
+    <nav class="nav">
+      <a href="#dashboard" data-nav="dashboard" onclick="toggleSide(false)"><i class="ic">▦</i><span class="lbl">Dashboard</span></a>
+      <a href="#wizard" data-nav="wizard" onclick="toggleSide(false)"><i class="ic">✦</i><span class="lbl">New Project</span></a>
+      <a href="#firebase" data-nav="firebase" onclick="toggleSide(false)"><i class="ic">🔥</i><span class="lbl">Firebase</span></a>
+      <a href="#supabase" data-nav="supabase" onclick="toggleSide(false)"><i class="ic">⚡</i><span class="lbl">Supabase</span></a>
+      <a href="#ai" data-nav="ai" onclick="toggleSide(false)"><i class="ic">◎</i><span class="lbl">AI Assistant</span></a>
+      <a href="#code" data-nav="code" onclick="toggleSide(false)"><i class="ic">&lt;/&gt;</i><span class="lbl">Code Generator</span></a>
+      <a href="#db" data-nav="db" onclick="toggleSide(false)"><i class="ic">▤</i><span class="lbl">Database</span></a>
+      <a href="#api" data-nav="api" onclick="toggleSide(false)"><i class="ic">⇄</i><span class="lbl">API Tester</span></a>
+      <a href="#backup" data-nav="backup" onclick="toggleSide(false)"><i class="ic">⤓</i><span class="lbl">Backup</span></a>
+      <a href="#admin" data-nav="admin" onclick="toggleSide(false)"><i class="ic">⚙</i><span class="lbl">Admin</span></a>
+    </nav>
+  </aside>
+
+  <main>
+    <header class="top">
+      <button class="sm" onclick="toggleSide()" aria-label="Toggle menu">☰</button>
+      <div class="title" id="pageTitle">Dashboard</div>
+      <button class="sm" onclick="toggleTheme()" aria-label="Toggle theme">◐ Theme</button>
+    </header>
+    <div class="content" id="view"></div>
+  </main>
+</div>
+
+<nav class="bottom">
+  <a href="#dashboard" data-nav="dashboard">Home</a>
+  <a href="#firebase" data-nav="firebase">Firebase</a>
+  <a href="#supabase" data-nav="supabase">Supabase</a>
+  <a href="#ai" data-nav="ai">AI</a>
+  <button onclick="toggleSide(true)">More</button>
+</nav>
+
+<div id="toasts"></div>
+<div id="modal" hidden>
+  <div class="dlg" role="dialog" aria-modal="true">
+    <h2 id="mT"></h2>
+    <p id="mB"></p>
+    <div class="row">
+      <button class="btn" id="mOk" onclick="closeModal(true)">OK</button>
+      <button class="btn ghost" id="mC" onclick="closeModal(false)">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== Configuration ===== */
+// Replace with your deployed backend. While this placeholder is present, the app runs in DEMO mode.
+const API_BASE_URL = "https://YOUR-BACKEND-API-DOMAIN.com";
+
+/* ===== Helpers ===== */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const isLive = () => !API_BASE_URL.includes("YOUR-BACKEND");
+const store = {
+  get(k, d) { try { return localStorage.getItem(k) ?? d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch {} }
+};
+
+/* ===== Demo data (local, not cloud) ===== */
+const S = {
+  projects: {
+    firebase: [{ id: "shop-app-prod", name: "Shop App Prod", apps: "android, web" }],
+    supabase: [{ id: "blog-api", name: "Blog API", region: "ap-south-1" }]
+  },
+  accounts: [],
+  tables: { users: [{ id: 1, name: "Ava", email: "ava@example.com" }, { id: 2, name: "Ben", email: "ben@example.com" }] },
+  activity: [],
+  backups: [],
+  maintenance: false
+};
+
+function log(msg) {
+  S.activity.push({ t: new Date().toLocaleTimeString(), msg });
+  if (S.activity.length > 100) S.activity.shift();
+}
+
+/* ===== UI feedback ===== */
+function toast(msg, type) {
+  const d = document.createElement("div");
+  d.className = "toast" + (type === "err" ? " err" : "");
+  d.textContent = msg;
+  $("#toasts").appendChild(d);
+  setTimeout(() => d.remove(), 3200);
+}
+
+let mRes = null;
+function dialog(title, msg, okText, withCancel) {
+  return new Promise(res => {
+    mRes = res;
+    $("#mT").textContent = title;
+    $("#mB").textContent = msg;
+    $("#mOk").textContent = okText || "OK";
+    $("#mC").hidden = !withCancel;
+    $("#modal").hidden = false;
+  });
+}
+function closeModal(v) {
+  $("#modal").hidden = true;
+  if (mRes) { mRes(v); mRes = null; }
+}
+const notice = msg => dialog("Demo mode", msg, "OK", false);
+const confirmDlg = msg => dialog("Please confirm", msg, "Confirm", true);
+
+/* ===== Backend API (all real cloud work goes through here) ===== */
+async function api(path, body, method) {
+  if (!isLive()) throw new Error("Backend not configured (demo mode).");
+  const r = await fetch(API_BASE_URL + path, {
+    method: method || "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: body !== undefined && body !== null ? JSON.stringify(body) : undefined
+  });
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(data.error || ("Request failed (HTTP " + r.status + ")"));
+  return data;
+}
+
+/* ===== Navigation ===== */
+const TITLES = { dashboard: "Dashboard", wizard: "New Project", firebase: "Firebase Builder", supabase: "Supabase Builder", ai: "AI Assistant", code: "Code Generator", db: "Database Manager", api: "API Tester", backup: "Backup", admin: "Admin Panel" };
+const routes = {
+  dashboard: renderDashboard,
+  wizard: renderWizard,
+  firebase: () => renderBuilder("firebase"),
+  supabase: () => renderBuilder("supabase"),
+  ai: renderAI,
+  code: renderCode,
+  db: renderDB,
+  api: renderAPI,
+  backup: renderBackup,
+  admin: renderAdmin
+};
+function route() {
+  const r = routes[location.hash.slice(1)] ? location.hash.slice(1) : "dashboard";
+  document.querySelectorAll("[data-nav]").forEach(a => a.classList.toggle("active", a.dataset.nav === r));
+  $("#pageTitle").textContent = TITLES[r];
+  $("#view").innerHTML = "";
+  routes[r]();
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", route);
+
+function toggleSide(force) {
+  const side = $("#side");
+  if (window.innerWidth <= 760) {
+    side.classList.toggle("open", force ?? !side.classList.contains("open"));
+  } else {
+    const c = force ?? !side.classList.contains("collapsed");
+    side.classList.toggle("collapsed", c);
+    store.set("bs-collapsed", c ? "1" : "0");
+  }
+}
+function toggleTheme() {
+  const light = document.documentElement.dataset.theme === "light";
+  document.documentElement.dataset.theme = light ? "dark" : "light";
+  store.set("bs-theme", light ? "dark" : "light");
+}
+
+/* ===== Dashboard ===== */
+function stat(label, value) {
+  return `<div class="glass stat"><span class="muted">${label}</span><strong>${value}</strong></div>`;
+}
+function activityHTML() {
+  if (!S.activity.length) return `<p class="muted">No activity yet.</p>`;
+  return S.activity.slice(-6).reverse().map(a => `<div class="hrow"><span class="muted">${a.t}</span> ${esc(a.msg)}</div>`).join("");
+}
+function renderDashboard() {
+  const fb = S.projects.firebase.length, sb = S.projects.supabase.length;
+  $("#view").innerHTML = `
+    <div class="head">
+      <div><h1>Dashboard</h1><p class="muted">${isLive() ? "Connected to backend API." : "Demo mode: backend not configured. No cloud changes will be made."}</p></div>
+      <span class="badge ${isLive() ? "ok" : "warn"}">${isLive() ? "LIVE" : "DEMO DATA"}</span>
+    </div>
+    <div class="grid">
+      ${stat("Total Projects", fb + sb)}
+      ${stat("Firebase Projects", fb)}
+      ${stat("Supabase Projects", sb)}
+      ${stat("Connected Accounts", S.accounts.length)}
+    </div>
+    <div class="grid two" style="margin-top:16px">
+      <section class="glass"><h2>Quick Actions</h2>
+        <div class="acts-grid">
+          <button onclick="location.hash='wizard'">✦ New project</button>
+          <button onclick="location.hash='firebase'">🔥 Firebase builder</button>
+          <button onclick="location.hash='supabase'">⚡ Supabase builder</button>
+          <button onclick="location.hash='ai'">◎ Ask AI</button>
+        </div>
+      </section>
+      <section class="glass"><h2>Recent Activity</h2>${activityHTML()}</section>
+    </div>`;
+}
+
+/* ===== Firebase / Supabase builders ===== */
+const FEAT = {
+  firebase: {
+    title: "Firebase Builder",
+    list: "/api/firebase/projects",
+    acts: [
+      ["Add Firebase to Cloud project", "/api/firebase/add"],
+      ["Register Android app", "/api/firebase/android"],
+      ["Register Web app", "/api/firebase/web"],
+      ["Retrieve config", "/api/firebase/config"],
+      ["Firestore", "/api/firebase/firestore"],
+      ["Realtime Database", "/api/firebase/rtdb"],
+      ["Storage", "/api/firebase/storage"],
+      ["Authentication", "/api/firebase/auth"],
+      ["Hosting", "/api/firebase/hosting"]
+    ],
+    connect: "google"
+  },
+  supabase: {
+    title: "Supabase Builder",
+    list: "/api/supabase/projects",
+    acts: [
+      ["Organizations", "/api/supabase/orgs"],
+      ["Create project", "/api/supabase/projects/create"],
+      ["Publishable key", "/api/supabase/keys"],
+      ["Tables", "/api/supabase/tables"],
+      ["Authentication", "/api/supabase/auth"],
+      ["Storage", "/api/supabase/storage"],
+      ["SQL editor", "/api/supabase/sql"]
+    ],
+    connect: "supabase"
+  }
+};
+
+function renderBuilder(p) {
+  const cfg = FEAT[p];
+  const rows = S.projects[p].map(x => `<tr><td>${esc(x.name)}</td><td>${esc(x.id)}</td><td>${esc(x.region || x.apps || "")}</td></tr>`).join("")
+    || `<tr><td colspan="3" class="muted">No projects loaded.</td></tr>`;
+  $("#view").innerHTML = `
+    <div class="head">
+      <div><h1>${cfg.title}</h1><p class="muted">Real operations run through the secure backend API.</p></div>
+      <span class="badge ${isLive() ? "ok" : "warn"}">${isLive() ? "LIVE" : "DEMO DATA"}</span>
+    </div>
+    <section class="glass stack">
+      <h2>Account</h2>
+      <div class="row"><button class="btn" onclick="connectAccount('${p}')">Connect ${p === "firebase" ? "Google" : "Supabase"} account</button>
+      <button class="btn ghost" onclick="loadProjects('${p}')">Refresh project list</button></div>
+    </section>
+    <section class="glass"><h2>Projects</h2><div class="twrap"><table>
+      <thead><tr><th>Name</th><th>ID</th><th>Region / Apps</th></tr></thead><tbody>${rows}</tbody>
+    </table></div></section>
+    <section class="glass"><h2>Modules</h2><div class="acts-grid">
+      ${cfg.acts.map((a, i) => `<button onclick="builderAct('${p}', ${i})">${esc(a[0])}</button>`).join("")}
+    </div></section>`;
+}
+
+function connectAccount(p) {
+  if (!isLive()) return notice("Account connection needs the backend OAuth endpoints. Set API_BASE_URL and deploy the backend. No account was connected.");
+  location.href = API_BASE_URL + "/oauth/" + FEAT[p].connect + "/start";
+}
+
+async function loadProjects(p) {
+  if (!isLive()) return notice("Project listing needs the backend API. Showing local demo data only.");
+  try {
+    const d = await api(FEAT[p].list, null, "GET");
+    S.projects[p] = Array.isArray(d.projects) ? d.projects : [];
+    log("Loaded " + p + " projects");
+    toast("Projects refreshed");
+    renderBuilder(p);
+  } catch (e) { toast(e.message, "err"); }
+}
+
+async function builderAct(p, i) {
+  const [label, path] = FEAT[p].acts[i];
+  const writes = /Add|Register|Create/.test(label);
+  if (writes && !(await confirmDlg(`"${label}" changes cloud resources through your connected account. Continue?`))) return;
+  if (!isLive()) return notice(`"${label}" is a real cloud operation. Deploy the backend and set API_BASE_URL to run it. Nothing was changed.`);
+  try {
+    await api(path, {});
+    log(label + " completed");
+    toast(label + " completed");
+  } catch (e) { toast(e.message, "err"); }
+}
+
+/* ===== Project creation wizard ===== */
+const WZ_STEPS = ["Provider", "Mode", "Name", "Target", "Settings", "Permissions", "Confirm", "Result"];
+let wz = { step: 0, provider: "firebase", mode: "auto", name: "", target: "", region: "ap-south-1", apps: "android, web", perm: false, result: null };
+
+function wzSave() {
+  const g = id => { const e = document.getElementById(id); return e ? (e.type === "checkbox" ? e.checked : e.value) : undefined; };
+  ["provider", "mode", "name", "target", "region", "apps", "perm"].forEach(k => {
+    const v = g("w_" + k);
+    if (v !== undefined) wz[k] = typeof v === "string" ? v.trim() : v;
+  });
+}
+
+function renderWizard() {
+  const s = wz.step;
+  const bar = `<div class="steps">${WZ_STEPS.map((n, i) => `<span class="st ${i < s ? "done" : i === s ? "cur" : ""}">${i + 1}</span>`).join("")}</div>`;
+  const targetLabel = wz.provider === "firebase" ? "Cloud project ID" : "Organization";
+  let body = "";
+  if (s === 0) body = `<label>Provider</label><select id="w_provider"><option value="firebase" ${wz.provider === "firebase" ? "selected" : ""}>Firebase</option><option value="supabase" ${wz.provider === "supabase" ? "selected" : ""}>Supabase</option></select>`;
+  if (s === 1) body = `<label>Creation mode</label><select id="w_mode"><option value="auto" ${wz.mode === "auto" ? "selected" : ""}>Automatic</option><option value="manual" ${wz.mode === "manual" ? "selected" : ""}>Manual wizard</option></select>`;
+  if (s === 2) body = `<label>Project name</label><input id="w_name" value="${esc(wz.name)}" placeholder="my-backend-project" maxlength="60">`;
+  if (s === 3) body = `<label>${targetLabel}</label><input id="w_target" value="${esc(wz.target)}" placeholder="${wz.provider === "firebase" ? "existing or new project ID" : "organization name"}">`;
+  if (s === 4) body = `<label>Region</label><select id="w_region">${["ap-south-1", "us-east-1", "eu-west-1", "ap-southeast-1"].map(r => `<option ${wz.region === r ? "selected" : ""}>${r}</option>`).join("")}</select>
+    ${wz.provider === "firebase" ? `<label>Apps to register</label><input id="w_apps" value="${esc(wz.apps)}">` : ""}`;
+  if (s === 5) body = `<label class="check"><input type="checkbox" id="w_perm" ${wz.perm ? "checked" : ""}> I authorize BACKEND STUDIO to create and configure resources on my connected account.</label>`;
+  if (s === 6) body = `<div class="stack"><div class="hrow">Provider: ${esc(wz.provider)}</div><div class="hrow">Mode: ${esc(wz.mode)}</div><div class="hrow">Name: ${esc(wz.name)}</div><div class="hrow">${targetLabel}: ${esc(wz.target)}</div><div class="hrow">Region: ${esc(wz.region)}</div></div>`;
+  if (s === 7) {
+    const r = wz.result;
+    if (!r) body = `<p class="muted">No run yet.</p>`;
+    else if (r.pending) body = `<p>Waiting for backend response…</p>`;
+    else if (r.demo) body = `<span class="badge warn">DEMO</span><p class="muted" style="margin-top:10px">${esc(r.msg)}</p>`;
+    else if (r.error) body = `<span class="badge">FAILED</span><p class="muted" style="margin-top:10px">${esc(r.error)}</p>`;
+    else body = `<span class="badge ok">BACKEND RESPONSE</span><pre style="margin-top:10px">${esc(JSON.stringify(r.data, null, 2))}</pre>`;
+  }
+  const canBack = s > 0 && s < 7;
+  const nav = s < 6
+    ? `<button class="btn" onclick="wzNext()">Next</button>`
+    : s === 6 ? `<button class="btn" onclick="wzCreate()">Confirm creation</button>`
+    : `<button class="btn ghost" onclick="wzReset()">Start over</button>`;
+  $("#view").innerHTML = `
+    <div class="head"><div><h1>New Project</h1><p class="muted">Step ${s + 1} of ${WZ_STEPS.length}: ${WZ_STEPS[s]}</p></div></div>
+    <section class="glass stack">${bar}${body}
+      <div class="row">${canBack ? `<button class="btn ghost" onclick="wzBack()">Back</button>` : ""}${nav}</div>
+    </section>`;
+}
+
+function wzNext() {
+  wzSave();
+  if (wz.step === 2 && !wz.name) return toast("Enter a project name", "err");
+  if (wz.step === 3 && !wz.target) return toast("Enter a target", "err");
+  if (wz.step === 5 && !wz.perm) return toast("Please accept the permissions to continue", "err");
+  wz.step++;
+  renderWizard();
+}
+function wzBack() { wzSave(); wz.step = Math.max(0, wz.step - 1); renderWizard(); }
+function wzReset() { wz = { ...wz, step: 0, name: "", target: "", perm: false, result: null }; renderWizard(); }
+
+async function wzCreate() {
+  wz.step = 7;
+  if (!isLive()) {
+    wz.result = { demo: true, msg: "Demo mode: nothing was created in Firebase or Supabase. Deploy the backend and set API_BASE_URL to run real provisioning." };
+    renderWizard();
+    return;
+  }
+  wz.result = { pending: true };
+  renderWizard();
+  try {
+    const data = await api("/api/projects", { provider: wz.provider, mode: wz.mode, name: wz.name, target: wz.target, region: wz.region, apps: wz.apps });
+    wz.result = { data };
+    log("Project created: " + wz.name);
+    toast("Backend confirmed project creation");
+  } catch (e) {
+    wz.result = { error: e.message };
+    toast(e.message, "err");
+  }
+  renderWizard();
+}
+
+/* ===== AI assistant (Gemini via backend only) ===== */
+let chat = [{ r: "a", t: "Hi, I'm the BACKEND STUDIO assistant. I can draft backend architectures, SQL, Firebase rules, API code and debugging help." }];
+
+function renderAI() {
+  $("#view").innerHTML = `
+    <div class="head"><div><h1>AI Assistant</h1><p class="muted">Gemini runs on your secure server. Keys never reach this page.</p></div>
+      <span class="badge ${isLive() ? "ok" : "warn"}">${isLive() ? "CONNECTED" : "NOT CONNECTED"}</span></div>
+    <section class="glass chat" id="chat">${chat.map(m => `<div class="msg ${m.r === "u" ? "u" : "a"}">${esc(m.t)}</div>`).join("")}</section>
+    <div class="chips">
+      <button class="chip" onclick="aiQuick(this.textContent)">Backend architecture for a shop app</button>
+      <button class="chip" onclick="aiQuick(this.textContent)">Firestore security rules for users</button>
+      <button class="chip" onclick="aiQuick(this.textContent)">SQL schema for blog posts</button>
+      <button class="chip" onclick="aiQuick(this.textContent)">Kotlin Retrofit client</button>
+    </div>
+    <form class="row" onsubmit="aiSend(event)">
+      <input id="aiIn" placeholder="Describe what you need…" required>
+      <button class="btn" type="submit">Send</button>
+    </form>`;
+  const c = $("#chat"); if (c) c.scrollTop = c.scrollHeight;
+}
+
+function aiQuick(text) { $("#aiIn") ? ($("#aiIn").value = text) : null; }
+
+async function aiSend(e) {
+  e.preventDefault();
+  const v = $("#aiIn").value.trim();
+  if (!v) return;
+  chat.push({ r: "u", t: v });
+  if (!isLive()) {
+    chat.push({ r: "a", t: "Gemini is not connected. Deploy the backend AI endpoint and set API_BASE_URL to get replies." });
+    return renderAI();
+  }
+  chat.push({ r: "a", t: "Thinking…" });
+  renderAI();
+  try {
+    const d = await api("/api/ai", { prompt: v });
+    chat[chat.length - 1] = { r: "a", t: d.text || "No text returned." };
+  } catch (err) {
+    chat[chat.length - 1] = { r: "a", t: "Error: " + err.message };
+  }
+  renderAI();
+}
+
+/* ===== Code generator ===== */
+const TPL = {
+  html: "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<title>App</title>\n</head>\n<body>\n  <h1>Hello</h1>\n</body>\n</html>",
+  css: "body {\n  font-family: system-ui, sans-serif;\n  margin: 0;\n}",
+  js: "const API_URL = 'https://your-api.example.com';\n\nasync function getItems() {\n  const res = await fetch(API_URL + '/items');\n  if (!res.ok) throw new Error('HTTP ' + res.status);\n  return res.json();\n}",
+  kotlin: "data class Item(val id: Int, val name: String)\n\nfun main() {\n    val items = listOf(Item(1, \"First\"))\n    items.forEach { println(it.name) }\n}",
+  java: "public class Main {\n    public static void main(String[] args) {\n        System.out.println(\"Hello BACKEND STUDIO\");\n    }\n}",
+  sql: "create table posts (\n  id bigint generated always as identity primary key,\n  title text not null,\n  created_at timestamptz default now()\n);\n\nalter table posts enable row level security;",
+  json: "{\n  \"name\": \"backend-studio-demo\",\n  \"version\": \"1.0.0\"\n}"
+};
+const EXT = { html: "html", css: "css", js: "js", kotlin: "kt", java: "java", sql: "sql", json: "json" };
+let cgLang = "html";
+
+function renderCode() {
+  $("#view").innerHTML = `
+    <div class="head"><div><h1>Code Generator</h1><p class="muted">Edit, copy or download snippets. Runs locally in your browser.</p></div></div>
+    <section class="glass stack">
+      <div class="row">
+        <select id="cgSel" onchange="cgLoad(this.value)">${Object.keys(TPL).map(k => `<option value="${k}" ${k === cgLang ? "selected" : ""}>${k.toUpperCase()}</option>`).join("")}</select>
+        <button class="btn ghost" onclick="cgCopy()">Copy</button>
+        <button class="btn" onclick="cgDownload()">Download</button>
+      </div>
+      <textarea id="cgEd" rows="16" spellcheck="false">${esc(TPL[cgLang])}</textarea>
+    </section>`;
+}
+function cgLoad(k) { cgLang = k; renderCode(); }
+function cgCopy() {
+  const v = $("#cgEd").value;
+  if (!navigator.clipboard) return toast("Copy not available here", "err");
+  navigator.clipboard.writeText(v).then(() => toast("Copied to clipboard"), () => toast("Copy failed", "err"));
+}
+function cgDownload() {
+  const blob = new Blob([$("#cgEd").value], { type: "text/plain" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "snippet." + EXT[cgLang];
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  toast("Download started");
+}
+
+/* ===== Database manager (local demo tables) ===== */
+let dbT = "users", dbQ = "", dbEdit = null;
+
+function renderDB() {
+  const names = Object.keys(S.tables);
+  const all = S.tables[dbT] || [];
+  const rows = all.filter(r => JSON.stringify(r).toLowerCase().includes(dbQ.toLowerCase()));
+  const cols = Object.keys(all[0] || { id: 0 });
+  $("#view").innerHTML = `
+    <div class="head"><div><h1>Database Manager</h1><p class="muted">Local demo tables. Live Firestore and Supabase data requires the backend.</p></div>
+      <span class="badge warn">DEMO DATA</span></div>
+    <section class="glass stack">
+      <div class="row">
+        <select onchange="dbT=this.value;dbEdit=null;renderDB()">${names.map(n => `<option ${n === dbT ? "selected" : ""}>${esc(n)}</option>`).join("")}</select>
+        <input id="dbS" placeholder="Search rows…" value="${esc(dbQ)}" oninput="dbQ=this.value;renderDB()">
+      </div>
+      <div class="twrap"><table>
+        <thead><tr>${cols.map(c => `<th>${esc(c)}</th>`).join("")}<th></th></tr></thead>
+        <tbody>${rows.map(r => `<tr>${cols.map(c => `<td>${esc(r[c])}</td>`).join("")}
+          <td class="acts"><button class="sm" onclick="dbEditRow(${Number(r.id)})">Edit</button>
+          <button class="sm danger" onclick="dbDel(${Number(r.id)})">Delete</button></td></tr>`).join("")
+          || `<tr><td colspan="99" class="muted">No rows match.</td></tr>`}</tbody>
+      </table></div>
+    </section>
+    <section class="glass stack">
+      <h2>${dbEdit ? "Update row #" + dbEdit.id : "Create row"}</h2>
+      <textarea id="dbJ" rows="5">${esc(dbEdit ? JSON.stringify(dbEdit, null, 2) : '{\n  "name": "",\n  "email": ""\n}')}</textarea>
+      <div class="row">
+        <button class="btn" onclick="dbSave()">${dbEdit ? "Save changes" : "Add row"}</button>
+        ${dbEdit ? `<button class="btn ghost" onclick="dbEdit=null;renderDB()">Cancel</button>` : ""}
+      </div>
+    </section>`;
+  if (dbQ) { const s = $("#dbS"); s.focus(); s.setSelectionRange(dbQ.length, dbQ.length); }
+}
+
+function dbEditRow(id) {
+  dbEdit = (S.tables[dbT] || []).find(r => r.id === id) || null;
+  renderDB();
+}
+function dbSave() {
+  let obj;
+  try { obj = JSON.parse($("#dbJ").value); } catch { return toast("Invalid JSON", "err"); }
+  if (typeof obj !== "object" || Array.isArray(obj) || !obj) return toast("Row must be a JSON object", "err");
+  const rows = S.tables[dbT];
+  if (dbEdit) {
+    const i = rows.findIndex(r => r.id === dbEdit.id);
+    obj.id = dbEdit.id;
+    rows[i] = obj;
+    log(`Updated ${dbT} #${obj.id} (local)`);
+    toast("Row updated");
+  } else {
+    obj.id = rows.reduce((m, r) => Math.max(m, Number(r.id) || 0), 0) + 1;
+    rows.push(obj);
+    log(`Created ${dbT} #${obj.id} (local)`);
+    toast("Row added");
+  }
+  dbEdit = null;
+  renderDB();
+}
+async function dbDel(id) {
+  if (!(await confirmDlg(`Delete row #${id} from ${dbT}? This is local demo data.`))) return;
+  S.tables[dbT] = S.tables[dbT].filter(r => r.id !== id);
+  log(`Deleted ${dbT} #${id} (local)`);
+  toast("Row deleted");
+  renderDB();
+}
+
+/* ===== API tester ===== */
+let apiHist = [];
+
+function renderAPI() {
+  $("#view").innerHTML = `
+    <div class="head"><div><h1>API Tester</h1><p class="muted">Requests go through the backend proxy, which enforces SSRF protection and rate limits.</p></div>
+      <span class="badge ${isLive() ? "ok" : "warn"}">${isLive() ? "VIA PROXY" : "DEMO – NOT SENT"}</span></div>
+    <section class="glass"><form class="stack" onsubmit="apiSend(event)">
+      <div class="row">
+        <select id="ap_m" style="max-width:140px">${["GET", "POST", "PUT", "PATCH", "DELETE"].map(m => `<option>${m}</option>`).join("")}</select>
+        <input id="ap_u" type="url" placeholder="https://api.example.com/items" required>
+      </div>
+      <label>Headers (JSON)</label>
+      <textarea id="ap_h" rows="3">{"Accept": "application/json"}</textarea>
+      <label>Authorization (sent with this request only, never stored)</label>
+      <input id="ap_a" type="password" autocomplete="off" placeholder="Bearer token">
+      <label>JSON body</label>
+      <textarea id="ap_b" rows="4" placeholder="{}"></textarea>
+      <div><button class="btn" type="submit">Send request</button></div>
+    </form></section>
+    <section class="glass"><h2>Response</h2><pre id="ap_r">No request sent yet.</pre></section>
+    <section class="glass"><h2>Request History</h2><div id="ap_hist">${histHTML()}</div></section>`;
+}
+function histHTML() {
+  if (!apiHist.length) return `<p class="muted">No requests yet.</p>`;
+  return apiHist.slice().reverse().map(h => `<div class="hrow"><span class="badge">${esc(h.m)}</span> ${esc(h.u)} <span class="muted">${esc(h.s)} · ${h.ms}ms</span></div>`).join("");
+}
+
+async function apiSend(e) {
+  e.preventDefault();
+  let headers, body;
+  try {
+    headers = JSON.parse($("#ap_h").value.trim() || "{}");
+    const raw = $("#ap_b").value.trim();
+    body = raw ? JSON.parse(raw) : undefined;
+  } catch { return toast("Invalid JSON in headers or body", "err"); }
+  const method = $("#ap_m").value, url = $("#ap_u").value.trim();
+  const auth = $("#ap_a").value;
+  if (auth) headers.Authorization = auth;
+  if (!isLive()) {
+    $("#ap_r").textContent = "Demo mode: request NOT sent. Deploy the backend proxy and set API_BASE_URL.";
+    return;
+  }
+  $("#ap_r").textContent = "Sending…";
+  const t0 = performance.now();
+  try {
+    const d = await api("/api/proxy", { method, url, headers, body });
+    const ms = Math.round(performance.now() - t0);
+    $("#ap_r").textContent = `Status: ${d.status}\nTime: ${ms} ms\n\n` + (typeof d.body === "string" ? d.body : JSON.stringify(d.body, null, 2));
+    apiHist.push({ m: method, u: url, s: d.status, ms });
+  } catch (err) {
+    $("#ap_r").textContent = "Error: " + err.message;
+    apiHist.push({ m: method, u: url, s: "error", ms: Math.round(performance.now() - t0) });
+  }
+  $("#ap_hist").innerHTML = histHTML();
+}
+
+/* ===== Backup ===== */
+function download(name, text, type) {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([text], { type }));
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+function addBackup(type, table) {
+  S.backups.push({ type, table, at: new Date().toLocaleString() });
+  log(`${type} backup of ${table} (local)`);
+}
+function exportJSON() {
+  download(`${dbT}.json`, JSON.stringify(S.tables[dbT], null, 2), "application/json");
+  addBackup("JSON", dbT); toast("JSON exported"); renderBackup();
+}
+function exportCSV() {
+  const rows = S.tables[dbT];
+  const cols = Object.keys(rows[0] || {});
+  const q = v => `"${String(v ?? "").replace(/"/g, '""')}"`;
+  const csv = [cols.join(","), ...rows.map(r => cols.map(c => q(r[c])).join(","))].join("\n");
+  download(`${dbT}.csv`, csv, "text/csv");
+  addBackup("CSV", dbT); toast("CSV exported"); renderBackup();
+}
+function exportSchema() {
+  const rows = S.tables[dbT] || [];
+  const cols = Object.keys(rows[0] || {});
+  const schema = { table: dbT, columns: cols.map(c => ({ name: c, type: typeof rows[0][c] })) };
+  download(`${dbT}.schema.json`, JSON.stringify(schema, null, 2), "application/json");
+  addBackup("Schema", dbT); toast("Schema exported"); renderBackup();
+}
+function cloudBackup(kind) {
+  if (!isLive()) return notice(`${kind} backup reads real cloud resources and needs the backend. Nothing was exported.`);
+  api("/api/backup/" + kind, {}).then(() => { addBackup(kind, "cloud"); toast(kind + " backup created"); renderBackup(); })
+    .catch(e => toast(e.message, "err"));
+}
+function restoreFile(input) {
+  const f = input.files[0];
+  if (!f) return;
+  const reader = new FileReader();
+  reader.onload = async () => {
+    let data;
+    try { data = JSON.parse(reader.result); } catch { return toast("File is not valid JSON", "err"); }
+    if (!Array.isArray(data) || !data.every(r => r && typeof r === "object")) return toast("Expected a JSON array of objects", "err");
+    if (!(await confirmDlg(`Replace all rows in ${dbT} with ${data.length} rows from this file?`))) return;
+    S.tables[dbT] = data.map((r, i) => ({ id: i + 1, ...r }));
+    log(`Restored ${dbT} from file (local)`);
+    toast("Restore complete");
+    renderBackup();
+  };
+  reader.readAsText(f);
+  input.value = "";
+}
+function renderBackup() {
+  $("#view").innerHTML = `
+    <div class="head"><div><h1>Backup</h1><p class="muted">Local exports work immediately. Cloud exports use the backend.</p></div></div>
+    <section class="glass stack">
+      <h2>Export local table: ${esc(dbT)}</h2>
+      <div class="row"><button class="btn" onclick="exportJSON()">JSON export</button>
+        <button class="btn" onclick="exportCSV()">CSV export</button>
+        <button class="btn ghost" onclick="exportSchema()">Schema backup</button></div>
+    </section>
+    <section class="glass stack">
+      <h2>Cloud backups</h2>
+      <div class="row"><button class="btn ghost" onclick="cloudBackup('project-metadata')">Project metadata</button>
+        <button class="btn ghost" onclick="cloudBackup('cloud-db-schema')">Database schema</button>
+        <button class="btn ghost" onclick="cloudBackup('cloud-zip')">ZIP export</button></div>
+    </section>
+    <section class="glass stack">
+      <h2>Restore</h2>
+      <p class="muted">Restore replaces rows in the current local table from a JSON array file.</p>
+      <input type="file" accept="application/json,.json" onchange="restoreFile(this)">
+    </section>
+    <section class="glass"><h2>Backup History</h2>${S.backups.length
+      ? S.backups.slice().reverse().map(b => `<div class="hrow">${esc(b.at)} · <span class="badge">${esc(b.type)}</span> ${esc(b.table)}</div>`).join("")
+      : `<p class="muted">No backups yet.</p>`}</section>`;
+}
+
+/* ===== Admin ===== */
+function renderAdmin() {
+  $("#view").innerHTML = `
+    <div class="head"><div><h1>Admin Panel</h1><p class="muted">Admin permissions are enforced by the backend. Values below are demo placeholders until connected.</p></div>
+      <span class="badge warn">DEMO DATA</span></div>
+    <div class="grid">
+      ${stat("Users", S.tables.users.length)}
+      ${stat("Projects", S.projects.firebase.length + S.projects.supabase.length)}
+      ${stat("API requests (session)", apiHist.length)}
+      ${stat("AI messages (session)", chat.filter(m => m.r === "u").length)}
+    </div>
+    <section class="glass stack" style="margin-top:16px">
+      <h2>System Settings</h2>
+      <label class="check"><input type="checkbox" ${S.maintenance ? "checked" : ""} onchange="toggleMaint(this.checked)"> Maintenance mode (UI notice only in this demo)</label>
+    </section>
+    <section class="glass"><h2>Audit Log</h2>${activityHTML()}</section>`;
+}
+function toggleMaint(on) {
+  S.maintenance = on;
+  log("Maintenance mode " + (on ? "enabled" : "disabled") + " (demo)");
+  toast("Maintenance mode " + (on ? "on" : "off"));
+}
+
+/* ===== Init ===== */
+(function init() {
+  const savedTheme = store.get("bs-theme", "dark");
+  document.documentElement.dataset.theme = savedTheme === "light" ? "light" : "dark";
+  if (store.get("bs-collapsed", "0") === "1" && window.innerWidth > 760) $("#side").classList.add("collapsed");
+  if (!isLive()) log("Started in demo mode (API_BASE_URL not configured)");
+  route();
+})();
+</script>
+</body>
+</html>
